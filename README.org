@@ -1,0 +1,28 @@
+#+title: org-powerslides
+
+This is my very minimal presentation tool using Org Mode.
+
+"Slides" are simply narrowed Org Mode subtrees with an optional image displayed
+
+This package is so minimalist it doesn't even require using a minor mode - just bind two keys!
+
+* Configuration
+     ;; TODO: integrate explanation of slide show stuff including image resizing with
+   ;; disabling window-divider-mode and fringe-mode
+   ;; use org-tidy-mode to hide PROPERTIES drawer
+   ;; include straight-use-package using GitHub repo
+
+* Slides with images setup
+  Add "images" property to each level of your outline where you want the image to change.
+
+  Images are displayed in other-window
+
+** Image preparation
+   One style I like is to have images take up a 3:4 ratio as in @daveshap's presentations
+
+   To crop your images to this ratio, I use the ImageMagick =convert= command
+   #+begin_src bash
+     convert dark-siamese-steampunk-cat.webp -gravity center -extent 3:4 dark-siamese-steampunk-cat-3-4.png
+   #+end_src
+* Alternative packages
+  The primary one is Richard Lister's =org-present=
