@@ -7,6 +7,21 @@
 ;; Package-Requires: ((org "7"))
 ;; URL: https://github.com/gregoryg/org-powerslides
 
+(defgroup org-powerslides nil
+  "Use Org Mode as frictionless presentation."
+  :group 'org-structure)
+
+(defcustom org-powerslides-level-limit nil
+  "If specified, a number indicating what level outline to display as a slide - child levels will be displayed in the slide.  The default is to use every level of an outline as a separate slide."
+  :type 'integer
+  :group 'org-powerslides)
+
+(defcustom org-powerslides-image-window nil
+  "If defined, a cons cell indicating image window position (left, right, above, below).  Default is to use other-window."
+  :type 'string
+  :group 'org-powerslides)
+
+
 (defun org-powerslides/show-next-slide (&optional NO-NARROW)
   "Show next subtree as slide with optional image, keeping other entries closed. Narrow to the subtree unless NO-NARROW is true."
   (interactive)
