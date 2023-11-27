@@ -79,33 +79,51 @@
         (buffer (find-file-noselect imgpath)))
     (display-buffer buffer)
     (org-powerslides-right-size-image-window (get-buffer-window buffer))
+    (with-current-buffer buffer
+      (image-transform-fit-to-window))
     (select-window current-window)))
 
 (defun org-powerslides-right-size-image-window (window )
   "Do eet"
-  ;; TODO make resizing work reliably
   (let* ((current-width (window-pixel-width window))
         (desired-width (floor (* .45 (frame-pixel-width))))
         (width-diff (- desired-width current-width)))
     (unless (zerop width-diff)
-      (window-resize window width-diff t t t))
-    ))
+      (window-resize window width-diff t t t))))
 
 (defun org-powerslides-start-presentation ()
+  (interactive)
+  (window-divider-mode -1)
+  (fringe-mode -1)
+  (global-hide-mode-line-mode 1)
+  (when (boundp 'org-tidy-mode)
+    (org-tidy-mode 1))
+  (set-opacity 100))
 
-(add-to-list 'org-speed-commands
-             '("]" ded/org-show-next-heading-tidily))
-(add-to-list 'org-speed-commands
-             '("[" ded/org-show-previous-heading-tidily))
-(add-to-list 'org-speed-commands
-             '("s" save-buffer))
-(add-to-list 'org-speed-commands
-             '("d" org-toggle-narrow-to-subtree))
+(defun org-powerslides-end-presentation ()
+  (interactive)
+  (window-divider-mode 1)
+  (fringe-mode 1)
+  (global-hide-mode-line-mode -1)
+  (when (boundp 'org-tidy-mode)
+    (org-tidy-mode -1))
+  (set-opacity 90))
+
+(defun org-num-level-2-only (numbering)
+  "Custom numbering function.
+NUMBERING is a list of numbers."
+  (let* ((l2num (second numbering))
+         (numstr (if l2num (number-to-string l2num) "")))
+    (concat numstr " ")))
 
 ;; TODO set global keys
 ;;  or ... the key combo should actually be in org-mode-map since this works only in org mode
 ;; (bind-key "s-]" 'org-powerslides/show-next-slide)
 ;; (bind-key "s-[" 'org-powerslides/show-previous-slide)
-
+;; TODO first assure org is loaded
+(global-unset-key (kbd "s-]"))
+(global-unset-key (kbd "s-["))
+(define-key org-mode-map (kbd "s-]") 'org-powerslides/show-next-slide)
+(define-key org-mode-map (kbd "s-[") 'org-powerslides/show-previous-slide)
 (provide 'org-powerslides)
 ;;; org-powerslides.el ends here
