@@ -29,7 +29,10 @@
   (let ((pos (point)))
     (if (save-excursion (end-of-line) (outline-invisible-p))
         (progn (org-show-entry) (outline-show-children))
-      (outline-next-heading)
+      (if org-powerslides-level-limit
+          ;; todo: signal if no movement (end of preso)
+          (org-forward-heading-same-level 1)
+        (outline-next-heading))
       (unless (and (bolp) (org-at-heading-p))
         (org-up-heading-safe)
         (outline-hide-subtree)
@@ -38,6 +41,8 @@
       (org-reveal t)
       (org-show-entry)
       (outline-show-children)
+      (when org-powerslides-level-limit
+        (org-show-all))
       (unless NO-NARROW (org-narrow-to-subtree))
       (let ((imgpath (org-entry-get nil "image")))
         (when imgpath
@@ -51,7 +56,10 @@
   (interactive)
   (widen)
   (let ((pos (point)))
-    (outline-previous-heading)
+    (if org-powerslides-level-limit
+        ;; todo signal if no movement (top of preso)
+        (org-backward-heading-same-level 1)
+      (outline-previous-heading))
     (unless (and (< (point) pos) (bolp) (org-at-heading-p))
       (goto-char pos)
       (outline-hide-subtree)
