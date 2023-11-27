@@ -11,14 +11,14 @@
   "Use Org Mode as frictionless presentation."
   :group 'org-structure)
 
-(defcustom org-powerslides-level-limit nil
-  "If specified, a number indicating what level outline to display as a slide - child levels will be displayed in the slide.  The default is to use every level of an outline as a separate slide."
+(defcustom org-powerslides-level-limit 0
+  "If non-zero, a number indicating what level outline to display as a slide - child levels will be displayed in the slide.  The default is to use every level of an outline as a separate slide."
   :type 'integer
   :group 'org-powerslides)
 
 (defcustom org-powerslides-image-window nil
   "If defined, a cons cell indicating image window position (left, right, above, below).  Default is to use other-window."
-  :type 'string
+  :type 'symbol
   :group 'org-powerslides)
 
 
@@ -29,7 +29,7 @@
   (let ((pos (point)))
     (if (save-excursion (end-of-line) (outline-invisible-p))
         (progn (org-show-entry) (outline-show-children))
-      (if org-powerslides-level-limit
+      (if (not (zerop org-powerslides-level-limit))
           ;; todo: signal if no movement (end of preso)
           (org-forward-heading-same-level 1)
         (outline-next-heading))
@@ -41,7 +41,7 @@
       (org-reveal t)
       (org-show-entry)
       (outline-show-children)
-      (when org-powerslides-level-limit
+      (when (not (zerop org-powerslides-level-limit))
         (org-show-all))
       (unless NO-NARROW (org-narrow-to-subtree))
       (let ((imgpath (org-entry-get nil "image")))
@@ -54,7 +54,7 @@
   (interactive)
   (widen)
   (let ((pos (point)))
-    (if org-powerslides-level-limit
+    (if (not (zerop org-powerslides-level-limit))
         ;; todo signal if no movement (top of preso)
         (org-backward-heading-same-level 1)
       (outline-previous-heading))
