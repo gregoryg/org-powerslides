@@ -46,10 +46,8 @@
       (unless NO-NARROW (org-narrow-to-subtree))
       (let ((imgpath (org-entry-get nil "image")))
         (when imgpath
-          (let ((current-window (selected-window))
-                (buffer (find-file-noselect imgpath)))
-            (display-buffer buffer)
-            (select-window current-window)))))))
+          (org-powerslides--display-image imgpath)
+          )))))
 
 (defun org-powerslides/show-previous-slide (&optional NO-NARROW)
   "Show previous subtree as a slide with optional image, keeping other entries closed. Narrow to the subtree unless NO-NARROW is true."
@@ -68,7 +66,21 @@
     (org-reveal t)
     (org-show-entry)
     (outline-show-children)
-    (unless NO-NARROW (org-narrow-to-subtree))))
+    (unless NO-NARROW (org-narrow-to-subtree))
+    (let ((imgpath (org-entry-get nil "image")))
+        (when imgpath
+          (org-powerslides--display-image imgpath)
+          ))
+    ))
+
+(defun org-powerslides--display-image (imgpath)
+  "Load and size IMGPATH in other-window."
+  (let ((current-window (selected-window))
+        (buffer (find-file-noselect imgpath)))
+    (display-buffer buffer)
+    (org-powerslides-right-size-image-window (get-buffer-window buffer))
+    (select-window current-window)))
+
 
 (add-to-list 'org-speed-commands
              '("]" ded/org-show-next-heading-tidily))
