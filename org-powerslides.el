@@ -2,7 +2,7 @@
 ;;
 ;; Copyright (C) 2023 by Gregory Grubbs
 ;;
-;; Author: Ric Lister
+;; Author: Gregory Grubbs
 ;; Version: 0.1
 ;; Package-Requires: ((org "7"))
 ;; URL: https://github.com/gregoryg/org-powerslides
