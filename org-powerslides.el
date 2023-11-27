@@ -81,6 +81,17 @@
     (org-powerslides-right-size-image-window (get-buffer-window buffer))
     (select-window current-window)))
 
+(defun org-powerslides-right-size-image-window (window )
+  "Do eet"
+  ;; TODO make resizing work reliably
+  (let* ((current-width (window-pixel-width window))
+        (desired-width (floor (* .45 (frame-pixel-width))))
+        (width-diff (- desired-width current-width)))
+    (unless (zerop width-diff)
+      (window-resize window width-diff t t t))
+    ))
+
+(defun org-powerslides-start-presentation ()
 
 (add-to-list 'org-speed-commands
              '("]" ded/org-show-next-heading-tidily))
