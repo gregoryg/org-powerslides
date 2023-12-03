@@ -120,10 +120,7 @@ NUMBERING is a list of numbers."
          (numstr (if l2num (number-to-string l2num) "")))
     (concat numstr " ")))
 
-;; TODO set global keys
-;;  or ... the key combo should actually be in org-mode-map since this works only in org mode
-;; (bind-key "s-]" 'org-powerslides/show-next-slide)
-;; (bind-key "s-[" 'org-powerslides/show-previous-slide)
+;; the key combo is set in org-mode-map since this works only in org mode
 ;; TODO first assure org is loaded
 (global-unset-key (kbd "s-]"))
 (global-unset-key (kbd "s-["))
