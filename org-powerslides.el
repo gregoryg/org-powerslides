@@ -46,8 +46,7 @@
       (unless NO-NARROW (org-narrow-to-subtree))
       (let ((imgpath (org-entry-get nil "image")))
         (when imgpath
-          (org-powerslides--display-image imgpath)
-          )))))
+          (org-powerslides--display-image (org-powerslides--select-random-image imgpath)))))))
 
 (defun org-powerslides/show-previous-slide (&optional NO-NARROW)
   "Show previous subtree as a slide with optional image, keeping other entries closed. Narrow to the subtree unless NO-NARROW is true."
@@ -69,11 +68,9 @@
     (unless NO-NARROW (org-narrow-to-subtree))
     (let ((imgpath (org-entry-get nil "image")))
         (when imgpath
-          (org-powerslides--display-image imgpath)
-          ))
-    ))
+          (org-powerslides--display-image (org-powerslides--select-random-image imgpath))))))
 
-(defun org-powerslides--display-image (imgpath)
+(defun org-powerslides--display-image (imgpaths)
   "Load and size IMGPATH in other-window."
   (let ((current-window (selected-window))
         (buffer (find-file-noselect imgpath)))
@@ -82,6 +79,11 @@
     (with-current-buffer buffer
       (image-transform-fit-to-window))
     (select-window current-window)))
+
+(defun org-powerslides--select-random-image (imgpath)
+  (let* ((s (s-split "|" imgpath))
+         (lens (length s)))
+    (nth (random lens) s)))
 
 (defun org-powerslides-right-size-image-window (window )
   "Do eet"
