@@ -7,13 +7,13 @@ This is my very minimal presentation tool using Org Mode.
 This package is so minimalist it doesn't even require using a minor mode - just bind two keys!
 
 * Configuration
-     ;; TODO: integrate explanation of slide show stuff including image resizing with
+   ;; TODO: integrate explanation of slide show stuff including image resizing with
    ;; disabling window-divider-mode and fringe-mode
    ;; use org-tidy-mode to hide PROPERTIES drawer
    ;; include straight-use-package using GitHub repo
 
 * Slides with images setup
-  Add "images" property to each level of your outline where you want the image to change.
+  Add "image" property to each level of your outline where you want the image to change.
 
   Images are displayed in other-window
 
@@ -24,5 +24,16 @@ This package is so minimalist it doesn't even require using a minor mode - just 
    #+begin_src bash
      convert dark-siamese-steampunk-cat.webp -gravity center -extent 3:4 dark-siamese-steampunk-cat-3-4.png
    #+end_src
+* Usage
+
+  To get the intended look on your presentations, consider installing these packages from elpa/melpa:
+  + =org-tidy= to hide the PROPERTIES drawer
+  + =hide-mode-line= or =mask-mode-line= to allow global hiding of the mode line.  This package looks for either of these modes and will activate whichever it finds when running = org-powerslides-start-presentation=
+
+  Before starting the presentation, set your font size to the desired presentation size by using =global-text-scale-adjust= or similar.  If using images in your presentation, set up the "other-window" to the relative position you prefer (left, right, up, down).
+
+  
+
+
 * Alternative packages
   The primary one is Richard Lister's =org-present=
