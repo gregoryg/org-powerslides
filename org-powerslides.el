@@ -80,8 +80,7 @@ Example value: \"Hack-24\"."
     (outline-show-children)
     (unless NO-NARROW (org-narrow-to-subtree))
     (let ((imgpath (org-entry-get nil "image")))
-        (when imgpath
-          (org-powerslides--display-image (org-powerslides--select-random-image imgpath))))))
+      (when imgpath
         (org-powerslides--display-image (org-powerslides--select-random-image imgpath))))))
 
 (defun org-powerslides--display-image (imgpath)
@@ -103,8 +102,8 @@ Example value: \"Hack-24\"."
 (defun org-powerslides-right-size-image-window (window )
   "Do eet"
   (let* ((current-width (window-pixel-width window))
-        (desired-width (floor (* .45 (frame-pixel-width))))
-        (width-diff (- desired-width current-width)))
+         (desired-width (floor (* .45 (frame-pixel-width))))
+         (width-diff (- desired-width current-width)))
     (unless (zerop width-diff)
       (window-resize window width-diff t t t))))
 
