@@ -116,6 +116,15 @@ Example value: \"Hack-24\"."
     (when hide-function (apply hide-function '(1))))
   (when (fboundp 'org-tidy-mode)
     (org-tidy-mode 1))
+  ;; frame font
+  (when (and (boundp 'org-powerslides-presentation-frame-font) (> (length org-powerslides-presentation-frame-font) 0))
+    ;; save original frame font
+    (when (not
+           (s-equals? org-powerslides--saved-frame-font org-powerslides-presentation-frame-font))
+      ;; assume current frame, global value
+      (setq org-powerslides--saved-frame-font (frame-parameter nil 'font)) )
+    (set-frame-font org-powerslides-presentation-frame-font))
+  ;; opacity/transparency
   (when (fboundp 'set-opacity) (set-opacity 100)))
 
 (defun org-powerslides-end-presentation ()
@@ -126,6 +135,11 @@ Example value: \"Hack-24\"."
     (when hide-function (apply hide-function '(-1))))
   (when (fboundp 'org-tidy-mode)
     (org-tidy-mode -1))
+  ;; restore frame font
+  (when (boundp 'org-powerslides--saved-frame-font)
+    (set-frame-font org-powerslides--saved-frame-font)
+    (setq org-powerslides--saved-frame-font nil))
+  ;; opacity/transparency
   (when (fboundp 'set-opacity) (set-opacity 90)))
 
 (defun org-num-level-2-only (numbering)
