@@ -82,8 +82,9 @@ Example value: \"Hack-24\"."
     (let ((imgpath (org-entry-get nil "image")))
         (when imgpath
           (org-powerslides--display-image (org-powerslides--select-random-image imgpath))))))
+        (org-powerslides--display-image (org-powerslides--select-random-image imgpath))))))
 
-(defun org-powerslides--display-image (imgpaths)
+(defun org-powerslides--display-image (imgpath)
   "Load and size IMGPATH in other-window."
   (let ((current-window (selected-window))
         (buffer (find-file-noselect imgpath)))
