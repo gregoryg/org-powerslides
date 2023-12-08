@@ -21,6 +21,19 @@
   :type 'symbol
   :group 'org-powerslides)
 
+(defcustom org-powerslides-presentation-frame-font ""
+  "Preferred font for presentation.
+See documentation for `set-frame-font'.
+Example value: \"Hack-24\"."
+  :type 'string
+  :group 'org-powerslides)
+
+(defcustom org-powerslides-post-image-load-hook nil
+  "Normal hook that runs after an image for a slide has first been loaded."
+  :type 'hook
+  :group 'org-powerslides)
+
+(setq org-powerslides--saved-frame-font nil)
 
 (defun org-powerslides/show-next-slide (&optional NO-NARROW)
   "Show next subtree as slide with optional image, keeping other entries closed. Narrow to the subtree unless NO-NARROW is true."
