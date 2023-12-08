@@ -91,7 +91,8 @@ Example value: \"Hack-24\"."
     (display-buffer buffer)
     (org-powerslides-right-size-image-window (get-buffer-window buffer))
     (with-current-buffer buffer
-      (image-transform-fit-to-window))
+      (image-transform-fit-to-window)
+      (run-hooks 'org-powerslides-post-image-load-hook))
     (select-window current-window)))
 
 (defun org-powerslides--select-random-image (imgpath)
