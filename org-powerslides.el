@@ -112,8 +112,7 @@ Example value: \"Hack-24\"."
   (interactive)
   (window-divider-mode -1)
   (fringe-mode -1)
-  (let ((hide-function (or 'global-mask-mode-line-mode 'global-hide-mode-line-mode)))
-    (when hide-function (apply hide-function '(1))))
+  (org-powerslides--hide-mode-line)
   (when (fboundp 'org-tidy-mode)
     (org-tidy-mode 1))
   ;; frame font
@@ -131,8 +130,7 @@ Example value: \"Hack-24\"."
   (interactive)
   (window-divider-mode 1)
   (fringe-mode 1)
-  (let ((hide-function (or 'global-mask-mode-line-mode 'global-hide-mode-line-mode)))
-    (when hide-function (apply hide-function '(-1))))
+  (org-powerslides--hide-mode-line -1)
   (when (fboundp 'org-tidy-mode)
     (org-tidy-mode -1))
   ;; restore frame font
@@ -149,6 +147,15 @@ NUMBERING is a list of numbers."
          (numstr (if l2num (number-to-string l2num) "")))
     (concat numstr " ")))
 
+(defun org-powerslides--hide-mode-line (&optional value)
+  "If a global mode-line hider is available, call the global function.
+If VALUE is a negative number, disable hiding."
+  (let ((hide-function (or 'global-mask-mode-line-mode global-hide-mode-line-mode))
+        (enable-disable (if (and (numberp value) (< value 0))
+                            -1
+                          1)))
+    (when hide-function
+      (funcall hide-function enable-disable))))
 ;; the key combo is set in org-mode-map since this works only in org mode
 ;; TODO first assure org is loaded
 (global-unset-key (kbd "s-]"))
