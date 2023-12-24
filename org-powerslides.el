@@ -16,9 +16,12 @@
   :type 'integer
   :group 'org-powerslides)
 
-(defcustom org-powerslides-image-window nil
-  "If defined, a cons cell indicating image window position (left, right, above, below).  Default is to use other-window."
-  :type 'symbol
+(defcustom org-powerslides-image-window-placement 'right
+  "If defined, a cons cell indicating image window placement (left, right, above, below).  Default is to use other-window."
+  :type '(choice (const :tag "Left" left)
+                 (const :tag "Right" right)
+                 (const :tag "Top" top)
+                 (const :tag "Bottom" bottom))
   :group 'org-powerslides)
 
 (defcustom org-powerslides-presentation-frame-font ""
@@ -87,6 +90,8 @@ Example value: \"Hack-24\"."
   "Load and size IMGPATH in other-window."
   (let ((current-window (selected-window))
         (buffer (find-file-noselect imgpath)))
+    (when (and (boundp org-powerslides-image-window-placement) (not (window-parent))) ;; only one window, so split
+      (split-window nil nil org-powerslides-image-window-placement))
     (display-buffer buffer)
     (org-powerslides-right-size-image-window (get-buffer-window buffer))
     (with-current-buffer buffer
