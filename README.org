@@ -24,6 +24,16 @@ This package is so minimalist it doesn't even require using a minor mode - just 
    #+begin_src bash
      convert dark-siamese-steampunk-cat.webp -gravity center -extent 3:4 dark-siamese-steampunk-cat-3-4.png
    #+end_src
+
+   A script for multiple files
+   #+begin_src bash
+     cd uncropped-images
+     for i in *; do
+         basef=$(echo $i | sed 's,\.\([^\.]\+\?\)$,,')
+         echo "Converting ${i} to ${j}-crop-4-3.png"
+         convert "${i}" -gravity center -extent 3:4 ../img/"${j}-crop-4-3.png"
+     done
+   #+end_src
 * Usage
 
   To get the intended look on your presentations, consider installing these packages from elpa/melpa:
