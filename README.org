@@ -30,8 +30,8 @@ This package is so minimalist it doesn't even require using a minor mode - just 
      cd uncropped-images
      for i in *; do
          basef=$(echo $i | sed 's,\.\([^\.]\+\?\)$,,')
-         echo "Converting ${i} to ${j}-crop-4-3.png"
-         convert "${i}" -gravity center -extent 3:4 ../img/"${j}-crop-4-3.png"
+         echo "Converting ${i} to ${basef}-crop-3-4.png"
+         convert "${i}" -gravity center -extent 3:4 ../img/"${basef}-crop-4-3.png"
      done
    #+end_src
 * Usage
