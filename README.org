@@ -42,7 +42,12 @@ This package is so minimalist it doesn't even require using a minor mode - just 
 
   Before starting the presentation, set your font size to the desired presentation size by using =global-text-scale-adjust= or similar.  If using images in your presentation, set up the "other-window" to the relative position you prefer (left, right, up, down).
 
-  
+  Use =org-powerslides-post-image-load-hook=  to do any additional adjustments right after a slide image has been first loaded (visited).  For instance, the packages that attempt to hide the mode line can be thwarted by image-mode's aggressive attempt to redisplay the mode line for its window.
+
+  An example might be
+  #+begin_src emacs-lisp
+    (add-hook 'org-powerslides-post-image-load-hook #'org-powerslides--hide-mode-line)
+  #+end_src
 
 
 * Alternative packages
