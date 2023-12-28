@@ -154,11 +154,17 @@ NUMBERING is a list of numbers."
 (defun org-powerslides--hide-mode-line (&optional value)
   "If a global mode-line hider is available, call the global function.
 If VALUE is a negative number, disable hiding."
-  (let ((hide-function (or 'global-mask-mode-line-mode global-hide-mode-line-mode))
+
+  (let ((hide-function
+       (cond ((fboundp 'global-mask-mode-line-mode) 'global-mask-mode-line-mode)
+             ((fboundp 'global-hide-mode-line-mode) 'global-hide-mode-line-mode)
+             (nil)))
         (enable-disable (if (and (numberp value) (< value 0))
                             -1
                           1)))
     (when hide-function
+      (when (fboundp 'doom-moodline-mode)
+        (doom-modeline-mode -1))
       (funcall hide-function enable-disable))))
 ;; the key combo is set in org-mode-map since this works only in org mode
 ;; TODO first assure org is loaded
