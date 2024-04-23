@@ -38,6 +38,25 @@ Example value: \"Hack-24\"."
 
 (setq org-powerslides--saved-frame-font nil)
 
+(defun org-powerslides/show-random-slide-same-level ()
+  "Show a random subtree at the same level as current point, or level 1 if outside the first heading."
+  (interactive)
+  (let ((current-level (if (org-at-heading-p)
+                           (org-current-level)
+                         1)))
+    (widen)
+    (org-overview)
+    (goto-char (point-min))
+    (let ((same-level-headings '()))
+      (while (re-search-forward (format "^\\*\\{%d\\} " current-level) nil t)
+        (push (point) same-level-headings))
+      (goto-char (nth (random (length same-level-headings)) same-level-headings))
+      (org-reveal t)
+      (org-show-entry)
+      (outline-show-children)
+      (org-narrow-to-subtree))))
+
+
 (defun org-powerslides/show-next-slide (&optional NO-NARROW)
   "Show next subtree as slide with optional image, keeping other entries closed. Narrow to the subtree unless NO-NARROW is true."
   (interactive)
