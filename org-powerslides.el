@@ -185,6 +185,23 @@ If VALUE is a negative number, disable hiding."
       (when (fboundp 'doom-moodline-mode)
         (doom-modeline-mode -1))
       (funcall hide-function enable-disable))))
+
+;; fun random image flipper, written by Bojack Opus 2024-04-22
+(add-hook 'org-powerslides-post-image-load-hook
+          (lambda ()
+            (let ((random-effect (random 4)))
+              (cond ((= random-effect 0)
+                     (image-rotate 180))
+                    ((= random-effect 1)
+                     (image-flip-horizontal))
+                    ((= random-effect 2)
+                     (let ((bojack-img (expand-file-name "~/Pictures/bojack.jpg")))
+                       (when (file-exists-p bojack-img)
+                         (find-image bojack-img))))
+                    (t nil)))))
+
+
+
 ;; the key combo is set in org-mode-map since this works only in org mode
 ;; TODO first assure org is loaded
 (global-unset-key (kbd "s-]"))
