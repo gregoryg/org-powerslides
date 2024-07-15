@@ -12,7 +12,9 @@
   :group 'org-structure)
 
 (defcustom org-powerslides-level-limit 0
-  "If non-zero, a number indicating what level outline to display as a slide - child levels will be displayed in the slide.  The default is to use every level of an outline as a separate slide."
+  "If non-zero, a number indicating what level outline to display as a slide - child levels will be displayed in the slide.  The default is to use every level of an outline as a separate slide.
+
+N.B. Currently, setting this variable to non-zero simply keeps the org heading level you begin with."
   :type 'integer
   :group 'org-powerslides)
 
