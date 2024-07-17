@@ -1,6 +1,6 @@
 ;;; org-powerslides.el --- Minimalist Org Mode functions for presentations
 ;;
-;; Copyright (C) 2023 by Gregory Grubbs
+;; Copyright (C) 2023,2024 by Gregory Grubbs
 ;;
 ;; Author: Gregory Grubbs
 ;; Version: 0.1
