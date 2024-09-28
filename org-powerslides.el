@@ -177,9 +177,9 @@ NUMBERING is a list of numbers."
 If VALUE is a negative number, disable hiding."
 
   (let ((hide-function
-       (cond ((fboundp 'global-mask-mode-line-mode) 'global-mask-mode-line-mode)
-             ((fboundp 'global-hide-mode-line-mode) 'global-hide-mode-line-mode)
-             (nil)))
+         (cond ((fboundp 'global-mask-mode-line-mode) 'global-mask-mode-line-mode)
+               ((fboundp 'global-hide-mode-line-mode) 'global-hide-mode-line-mode)
+               (nil)))
         (enable-disable (if (and (numberp value) (< value 0))
                             -1
                           1)))
@@ -189,22 +189,24 @@ If VALUE is a negative number, disable hiding."
       (funcall hide-function enable-disable))))
 
 ;; fun random image flipper, written by Bojack Opus 2024-04-22
-(add-hook 'org-powerslides-post-image-load-hook
-          (lambda ()
-            (let ((random-effect (random 4)))
-              (cond ((= random-effect 0)
-                     (image-rotate 180))
-                    ((= random-effect 1)
-                     (image-flip-horizontal))
-                    ((= random-effect 2)
-                     (let ((bojack-img (expand-file-name "~/Pictures/bojack.jpg")))
-                       (when (file-exists-p bojack-img)
-                         (find-image bojack-img))))
-                    (t nil)))))
+(defun org-powerslides--random-image-effects ()
+  "Fun random image flipper, written by Bojack Claude Opus 2024-04-22.
+Add to `org-powerslides-post-image-load-hook'."
+  (let ((random-effect (random 4)))
+    (cond ((= random-effect 0)
+           (image-rotate 180))
+          ((= random-effect 1)
+           (image-flip-horizontal))
+          ((= random-effect 2)
+           (let ((bojack-img (expand-file-name "~/Pictures/bojack.jpg")))
+             (when (file-exists-p bojack-img)
+               (find-image bojack-img))))
+          (t nil))))
+
+;;(add-hook 'org-powerslides-post-image-load-hook 'org-powerslides--random-image-effects)
 
 
-
-;; the key combo is set in org-mode-map since this works only in org mode
+;; the key combo is set in org-mode-map since this should only be used in org mode
 ;; TODO first assure org is loaded
 (global-unset-key (kbd "s-]"))
 (global-unset-key (kbd "s-["))
