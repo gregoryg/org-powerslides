@@ -38,7 +38,7 @@ This package is so minimalist it doesn't even require using a minor mode - just 
 
   To get the intended look on your presentations, consider installing these packages from elpa/melpa:
   + =org-tidy= to hide the PROPERTIES drawer
-  + =hide-mode-line= or =mask-mode-line= to allow global hiding of the mode line.  This package looks for either of these modes and will activate whichever it finds when running = org-powerslides-start-presentation=
+  + =hide-mode-line= or =mask-mode-line= to allow global hiding of the mode line.  This package looks for either of these modes and will activate whichever it finds when running =org-powerslides-start-presentation=
 
   Before starting the presentation, set your font size to the desired presentation size by using =global-text-scale-adjust= or similar.  If using images in your presentation, set up the "other-window" to the relative position you prefer (left, right, up, down).
 
