@@ -11,11 +11,12 @@
   "Use Org Mode as frictionless presentation."
   :group 'org-structure)
 
-(defcustom org-powerslides-level-limit 0
-  "If non-zero, a number indicating what level outline to display as a slide - child levels will be displayed in the slide.  The default is to use every level of an outline as a separate slide.
-
-N.B. Currently, setting this variable to non-zero simply keeps the org heading level you begin with."
-  :type 'integer
+(defcustom org-powerslides-same-level-only nil
+  "If non-nil, restrict slides to the current outline level only.
+When nil, every heading becomes a slide.  When t, only
+the first level you start on is used—its children are shown
+inside that same slide instead of becoming separate slides."
+  :type 'boolean
   :group 'org-powerslides)
 
 (defcustom org-powerslides-image-window-placement 'right
@@ -66,7 +67,7 @@ Example value: \"Hack-24\"."
   (let ((pos (point)))
     (if (save-excursion (end-of-line) (outline-invisible-p))
         (progn (org-show-entry) (outline-show-children))
-      (if (not (zerop org-powerslides-level-limit))
+      (if org-powerslides-same-level-only
           ;; todo: signal if no movement (end of preso)
           (org-forward-heading-same-level 1)
         (outline-next-heading))
@@ -78,7 +79,7 @@ Example value: \"Hack-24\"."
       (org-reveal t)
       (org-show-entry)
       (outline-show-children)
-      (when (not (zerop org-powerslides-level-limit))
+      (when org-powerslides-same-level-only
         (org-show-all))
       (unless NO-NARROW (org-narrow-to-subtree))
       (let ((imgpath (org-entry-get nil "image")))
@@ -90,7 +91,7 @@ Example value: \"Hack-24\"."
   (interactive)
   (widen)
   (let ((pos (point)))
-    (if (not (zerop org-powerslides-level-limit))
+    (if org-powerslides-same-level-only
         ;; todo signal if no movement (top of preso)
         (org-backward-heading-same-level 1)
       (outline-previous-heading))
