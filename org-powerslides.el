@@ -4,7 +4,7 @@
 ;;
 ;; Author: Gregory Grubbs
 ;; Version: 0.1
-;; Package-Requires: ((org "7"))
+;; Package-Requires: ((org "9"))
 ;; URL: https://github.com/gregoryg/org-powerslides
 
 (defgroup org-powerslides nil
