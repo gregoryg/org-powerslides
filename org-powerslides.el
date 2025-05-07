@@ -190,14 +190,9 @@ do not narrow the buffer to the subtree."
     (set-frame-font org-powerslides--saved-frame-font)
     (setq org-powerslides--saved-frame-font nil))
   ;; opacity/transparency
-  (when (fboundp 'set-opacity) (set-opacity 90)))
-
-(defun org-num-level-2-only (numbering)
-  "Custom numbering function.
-NUMBERING is a list of numbers."
-  (let* ((l2num (second numbering))
-         (numstr (if l2num (number-to-string l2num) "")))
-    (concat numstr " ")))
+  (when (fboundp 'set-opacity) (set-opacity 90))
+  ;; cleanup image buffers
+  (org-powerslides--cleanup-images))
 
 (defun org-powerslides--hide-mode-line (&optional value)
   "If a global mode-line hider is available, call the global function.
