@@ -45,7 +45,7 @@ Example value: \"Hack-24\"."
 (setq org-powerslides--saved-frame-font nil)
 
 (defun org-powerslides/show-random-slide-same-level ()
-  "Show a random subtree at the same level as current point, or level 1 if outside the first heading."
+  "Show a random subtree at the same level as current point, or level 1 if outside the first heading.  This function may be most useful for a future extension of this package to handle flashcards using a similar Org Mode structure."
   (interactive)
   (let ((current-level (if (org-at-heading-p)
                            (org-current-level)
