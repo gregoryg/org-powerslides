@@ -11,6 +11,9 @@
   "Use Org Mode as frictionless presentation."
   :group 'org-structure)
 
+(defvar org-powerslides--image-buffers nil
+  "List of image buffers opened/displayed during a presentation.")
+
 (defcustom org-powerslides-same-level-only nil
   "If non-nil, restrict slides to the current outline level only.
 When nil, every heading becomes a slide.  When t, only
@@ -53,66 +56,77 @@ Example value: \"Hack-24\"."
     (let ((same-level-headings '()))
       (while (re-search-forward (format "^\\*\\{%d\\} " current-level) nil t)
         (push (point) same-level-headings))
-      (goto-char (nth (random (length same-level-headings)) same-level-headings))
-      (org-reveal t)
-      (org-show-entry)
-      (outline-show-children)
-      (org-narrow-to-subtree))))
+      (if (null same-level-headings)
+          (user-error "No headings at current level: cannot pick a slide.")
+        (goto-char (nth (random (length same-level-headings)) same-level-headings))
+        (org-reveal t)
+        (org-show-entry)
+        (outline-show-children)
+        (org-narrow-to-subtree)))))
 
 
-(defun org-powerslides/show-next-slide (&optional NO-NARROW)
-  "Show next subtree as slide with optional image, keeping other entries closed. Narrow to the subtree unless NO-NARROW is true."
-  (interactive)
-  (widen)
-  (let ((pos (point)))
-    (if (save-excursion (end-of-line) (outline-invisible-p))
-        (progn (org-show-entry) (outline-show-children))
-      (if org-powerslides-same-level-only
-          ;; todo: signal if no movement (end of preso)
-          (org-forward-heading-same-level 1)
-        (outline-next-heading))
-      (unless (and (bolp) (org-at-heading-p))
-        (org-up-heading-safe)
-        (outline-hide-subtree)
-        (message "End of outline reached."))
+;; new helper
+(defun org-powerslides--move-to-slide (direction &optional no-narrow)
+  "Move to the next or previous slide and display it.
+DIRECTION is either 'next or 'prev.  If NO-NARROW is non-nil,
+do not narrow the buffer to the subtree."
+  (catch 'out-of-bounds
+    (let* ((move-fn
+            (pcase (list direction org-powerslides-same-level-only)
+              (`(next t) (lambda () (org-forward-heading-same-level 1)))
+              (`(next ,_) #'outline-next-heading)
+              (`(prev t) (lambda () (org-backward-heading-same-level 1)))
+              (`(prev ,_) #'outline-next-heading)
+              (_ (error "Bad direction/same-level flag: %S" (list direction org-powerslides-same-level-only)))
+              ))
+           (orig (point)))
+      (widen)
+      ;; try the move, bail out if off-heading or off-buffer
+      (funcall move-fn)
+      (unless (and (< (point) (point-max))
+                   (> (point) (point-min))
+                   (org-at-heading-p))
+        (goto-char orig)
+        (message (if (eq direction 'next)
+                     "End of outline reached."
+                   "Top of outline reached."))
+        (throw 'out-of-bounds nil))
+      ;; —if we get here, move was good—continue with reveal, narrow, image, etc.
+      ;; show just this subtree
       (org-overview)
       (org-reveal t)
       (org-show-entry)
       (outline-show-children)
-      (when org-powerslides-same-level-only
+      (when (not org-powerslides-same-level-only)
+        ;; when we're *not* restricting to same level, show everything under it
         (org-show-all))
-      (unless NO-NARROW (org-narrow-to-subtree))
-      (let ((imgpath (org-entry-get nil "image")))
-        (when imgpath
-          (org-powerslides--display-image (org-powerslides--select-random-image imgpath)))))))
+      (unless no-narrow
+        (org-narrow-to-subtree))
+      ;; maybe display an image on the side
+      (let ((img (org-entry-get nil "image")))
+        (when img
+          (org-powerslides--display-image
+           (org-powerslides--select-random-image img)))))))
 
-(defun org-powerslides/show-previous-slide (&optional NO-NARROW)
-  "Show previous subtree as a slide with optional image, keeping other entries closed. Narrow to the subtree unless NO-NARROW is true."
-  (interactive)
-  (widen)
-  (let ((pos (point)))
-    (if org-powerslides-same-level-only
-        ;; todo signal if no movement (top of preso)
-        (org-backward-heading-same-level 1)
-      (outline-previous-heading))
-    (unless (and (< (point) pos) (bolp) (org-at-heading-p))
-      (goto-char pos)
-      (outline-hide-subtree)
-      (message "Top of outline reached"))
-    (org-overview)
-    (org-reveal t)
-    (org-show-entry)
-    (outline-show-children)
-    (unless NO-NARROW (org-narrow-to-subtree))
-    (let ((imgpath (org-entry-get nil "image")))
-      (when imgpath
-        (org-powerslides--display-image (org-powerslides--select-random-image imgpath))))))
+;; now redefine the public commands
+(defun org-powerslides/show-next-slide (&optional no-narrow)
+  "Advance to the next slide."
+  (interactive "P")
+  (org-powerslides--move-to-slide 'next no-narrow))
+
+(defun org-powerslides/show-previous-slide (&optional no-narrow)
+  "Go back to the previous slide."
+  (interactive "P")
+  (org-powerslides--move-to-slide 'prev no-narrow))
 
 (defun org-powerslides--display-image (imgpath)
-  "Load and size IMGPATH in other-window."
-  (let ((current-window (selected-window))
-        (buffer (find-file-noselect imgpath)))
-    (when (and (boundp 'org-powerslides-image-window-placement) (not (window-parent))) ;; only one window, so split
+  "Load and size IMGPATH in other-window and remember the buffer."
+  (let* ((current-window (selected-window))
+         (buffer (find-file-noselect imgpath)))
+    ;; record image buffer in internal var
+    (unless (memq buffer org-powerslides--image-buffers)
+      (push buffer org-powerslides--image-buffers))
+    (when (and (boundp 'org-powerslides-image-window-placement) (one-window-p t)) ;; only one window, so split
       (split-window nil nil org-powerslides-image-window-placement))
     (display-buffer buffer)
     (org-powerslides-right-size-image-window (get-buffer-window buffer))
@@ -151,6 +165,16 @@ Example value: \"Hack-24\"."
     (set-frame-font org-powerslides-presentation-frame-font))
   ;; opacity/transparency
   (when (fboundp 'set-opacity) (set-opacity 100)))
+
+(defun org-powerslides--cleanup-images ()
+  "Kill all image buffers opened by org-powerslides."
+  (dolist (buf org-powerslides--image-buffers)
+    (when (buffer-live-p buf)
+      ;; close any window showing it
+      (dolist (win (get-buffer-window-list buf nil t))
+        (delete-window win))
+      (kill-buffer buf)))
+  (setq org-powerslides--image-buffers nil))
 
 (defun org-powerslides-end-presentation ()
   (interactive)
