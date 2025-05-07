@@ -136,12 +136,14 @@ do not narrow the buffer to the subtree."
     (select-window current-window)))
 
 (defun org-powerslides--select-random-image (imgpath)
-  (let* ((s (s-split "|" imgpath))
-         (lens (length s)))
-    (nth (random lens) s)))
+  "Split IMGPATh on '|' (omitting any empty fields) and pick one at random."
+  (let* ((parts (split-string imgpath "|" t))  ; t = omit-nulls
+         (n     (length parts)))
+    (when (> n 0)
+      (nth (random n) parts))))
 
 (defun org-powerslides-right-size-image-window (window )
-  "Do eet"
+  "Resize the image to fit relative window boundaries."
   (let* ((current-width (window-pixel-width window))
          (desired-width (floor (* .45 (frame-pixel-width))))
          (width-diff (- desired-width current-width)))
