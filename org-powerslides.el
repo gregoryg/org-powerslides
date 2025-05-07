@@ -232,7 +232,10 @@ Add to `org-powerslides-post-image-load-hook'."
 ;; TODO first assure org is loaded
 (global-unset-key (kbd "s-]"))
 (global-unset-key (kbd "s-["))
-(define-key org-mode-map (kbd "s-]") 'org-powerslides/show-next-slide)
-(define-key org-mode-map (kbd "s-[") 'org-powerslides/show-previous-slide)
+
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "s-]") 'org-powerslides/show-next-slide)
+  (define-key org-mode-map (kbd "s-[") 'org-powerslides/show-previous-slide))
+
 (provide 'org-powerslides)
 ;;; org-powerslides.el ends here
