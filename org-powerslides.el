@@ -76,7 +76,7 @@ do not narrow the buffer to the subtree."
               (`(next t) (lambda () (org-forward-heading-same-level 1)))
               (`(next ,_) #'outline-next-heading)
               (`(prev t) (lambda () (org-backward-heading-same-level 1)))
-              (`(prev ,_) #'outline-next-heading)
+              (`(prev ,_) #'outline-previous-heading)
               (_ (error "Bad direction/same-level flag: %S" (list direction org-powerslides-same-level-only)))
               ))
            (orig (point)))
